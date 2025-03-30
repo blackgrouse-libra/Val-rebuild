@@ -54,9 +54,8 @@ libra version
 libra config validator-init
 
 # Create systemd service file
-sudo bash -c "cat > /etc/systemd/system/libra.service" << 'EOF'
+sudo "nano > /etc/systemd/system/libra.service" << 'EOF'
 
-sudo nano /etc/systemd/system/libra.service
 [Unit]
 Description=Libra Node Validator Service
 After=network.target
