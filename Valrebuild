@@ -1,0 +1,82 @@
+#!/bin/bash
+
+# ASCII art for the welcome message
+WELCOME_ART="
+   **********  Welcome to Libra Validator Rebuild Setup  **********
+            *      <-.(\`-')     (\`-')   (\`-')  *  
+   <-.     (_)      __( OO)  <-.(OO )   (OO ).-/  
+ ,--. )    ,-(\`-') '-'---.\  ,------,)  / ,---.   
+ |  (\`-')  | ( OO) | .-. (/  |   /\`. '  | \ /\`.\  
+ |  |OO )  |  |  ) | '-' \`. ) |  |_.' |  '-'|_.' | 
+(|  '__ | (|  |_/  | /\`'.  | |  .   .' (|  .-.  | 
+ |     |'  |  |'-> | '--'  / |  |\  \   |  | |  | 
+ \`-----'   \`--'    \`------'  \`--' '--'  \`--' \`--' 
+************************************************************
+"
+
+# Print the welcome message
+echo "$WELCOME_ART"
+
+# Update package lists
+sudo apt update
+
+# Install required dependencies
+sudo apt install -y git tmux jq build-essential cmake clang llvm libgmp-dev pkg-config libssl-dev lld libpq-dev
+
+# Install Rust
+curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y
+
+# Source bashrc to update environment
+source ~/.bashrc
+
+# Create new tmux session
+tmux new -t libra-setup
+
+# Clone libra-framework repository
+git clone https://github.com/0LNetworkCommunity/libra-framework
+
+# Navigate to libra-framework directory
+cd ~/libra-framework
+
+# Build libra with cargo
+cargo build --release -p libra
+
+# Copy libra binaries to cargo bin
+sudo cp -f ~/libra-framework/target/release/libra* ~/.cargo/bin/
+
+# Check libra version
+libra version
+
+# Initialize validator configuration
+libra config validator-init
+
+# Create systemd service file
+sudo bash -c "cat > /etc/systemd/system/libra.service" << 'EOF'
+
+sudo nano /etc/systemd/system/libra.service
+[Unit]
+Description=Libra Node Validator Service
+After=network.target
+
+[Service]
+User=root
+ExecStart=/root/libra-framework/target/release/libra node --config-path /root/.libra/validator.yaml
+Restart=on-failure
+WorkingDirectory=/root/.libra
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# Reload systemd daemon
+sudo systemctl daemon-reload
+
+# Enable libra service
+sudo systemctl enable libra.service
+
+# Start libra service
+
+sudo systemctl start libra.service
+
+# Show service status
+sudo systemctl status libra.service
