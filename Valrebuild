@@ -38,6 +38,9 @@ git clone https://github.com/0LNetworkCommunity/libra-framework
 # Navigate to libra-framework directory
 cd ~/libra-framework
 
+# Source bashrc to update environment
+source ~/.bashrc
+
 # Build libra with cargo
 cargo build --release -p libra
 
