@@ -83,3 +83,6 @@ sudo systemctl start libra.service
 
 # Show service status
 sudo systemctl status libra.service
+
+# show node progress
+watch 'curl localhost:8080/v1/ | jq'
