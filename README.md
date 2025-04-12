@@ -1,4 +1,6 @@
-# Val-rebuild
-validator rebuild 
+Validator install script
 
-So far this needs a reboot and I am unsure how to fix this for the cargo element. Please feel free to fix, otherwise it needs ran twice - once until it crashes, reboot, then run again. Obv chmod +x filename and ./filename.sh
+Installs all dependancies required, and libra framework
+
+chmod +x install_validator.sh
+./validator.sh
